@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
-
-function LoginPage() {
+import Axios from 'axios'
+import { useDispatch } from 'react-redux'
+import { loginUser } from '../../../_actions/user_action'
+function LoginPage(props) {
+    const dispatch = useDispatch()
 
     const [Email, setEmail] = useState("")
-    const [Pasword, setPassword] = useState("")
+    const [Password, setPassword] = useState("")
 
     const onEmailHandler = (event) => {
 
@@ -16,8 +19,23 @@ function LoginPage() {
     }
 
     const onSubmitHandler = (event) => {
+        event.preventDefault();
 
-        setPassword(event.currentTarget.value)
+        let body = {
+            email: Email,
+            password: Password
+        }
+
+        dispatch(loginUser(body))
+            .then(response => {
+                if(response.payload.loginSuccess) {
+                    props.history.push('/')
+                } else {
+                    alert("Error!")
+                }
+            })
+
+        
     }
 
     return (
@@ -31,7 +49,7 @@ function LoginPage() {
                 <label>Email</label>
                 <input type="email" value={Email} onChange={onEmailHandler} />
                 <label>Password</label>
-                <input type="password" value={Pasword} onChange={onPasswordHandler} />
+                <input type="password" value={Password} onChange={onPasswordHandler} />
                 <br/>
                 <button>
                     Login
